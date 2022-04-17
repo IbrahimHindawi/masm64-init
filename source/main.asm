@@ -1,32 +1,35 @@
-;------------------------------------------------------------------------------------------------
-;                                                                                               -
-;           start project                                                                       -
-;------------------------------------------------------------------------------------------------
-;                                                                                               -
-;                                                                                               -
-;                                                                                               -
-;------------------------------------------------------------------------------------------------
-                                                ExitProcess     proto
-												GetStdHandle	proto
-												WriteFile		proto
-STD_OUTPUT_HANDLE								equ				-11
-;----------[const section]-----------------------------------------------------------------------
+;-----------------------------------------------------------------------------------------------;
+;                                                                                               ;
+;           start project                                                                       ;
+;-----------------------------------------------------------------------------------------------;
+;                                                                                               ;
+;                                                                                               ;
+;                                                                                               ;
+;-----------------------------------------------------------------------------------------------;
+                                                exitprocess     proto
+												getstdhandle	proto
+												writefile		proto
+												sleep			proto
+std_output_handle								equ				-11
+;----------[const section]----------------------------------------------------------------------;
 .const
 ;outputmessagelength							qword			sizeof outputmessage
-outputmessage									byte			'Hello, World!'
-												byte			0AH, 0DH
+outputmessage									byte			'hello, world!'
+												byte			0ah, 0dh
+												byte			'from masm64!'
+												byte			0ah, 0dh
 outputmessagelength								equ		 		$ - outputmessage
-;----------[data section]-------------------------------------------------------------------------
+;----------[data section]-----------------------------------------------------------------------;
 .data
-var                                             qword           0FFFFh
+var                                             qword           0ffffh
 
-;----------[code section]-------------------------------------------------------------------------
+;----------[code section]-----------------------------------------------------------------------;
 .code
 main                                            proc
-                                                ;-----[multiplication]---------------------------
-                                                ; 64-bit multiplication results in 128-bit result
+                                                ;-----[multiplication]--------------------------;
+                                                ; 64-bit multiplication results in 128-bit resul;
                                                 ; therefore rax and rdx are used
-                                                ;------------------------------------------------
+                                                ;-----------------------------------------------;
                                                 xor             rax, rax                        ; clear rax
                                                 xor             rcx, rcx                        ; clear rcx
                                                 
@@ -44,23 +47,26 @@ main                                            proc
 
 												mul				rcx 
 												mov				var, rax
-                                                ;-----[data output]------------------------------
-                                                ; print something to the console using WriteFile
+                                                ;-----[data output]-----------------------------;
+                                                ; print something to the console using writefile
                                                 ; write to std out
-                                                ;------------------------------------------------
-												sub				rsp, 40							; WriteFile(5 parms) * 8 = 40 bytes
-												mov				rcx, STD_OUTPUT_HANDLE
-												call			GetStdHandle
+                                                ;-----------------------------------------------;
+												sub				rsp, 40							; writefile(5 parms) * 8 = 40 bytes
+												mov				rcx, std_output_handle
+												call			getstdhandle
 
 												mov				rcx, rax
 												lea				rdx, outputmessage
 												mov				r8, outputmessagelength
 												xor				r9, r9
 												mov				[rsp + 32], r9					; nth parm - 1 = (5 - 4) * 8 = 32 bytes
-												call			WriteFile
+												call			writefile
+
+												mov				rcx, 5000d
+												call			sleep
                                                 
 												xor				rcx, rcx						; set termination code 0 for clean exit
-                                                call            ExitProcess
+                                                call            exitprocess
                                                 ret             0
 main                                            endp
 end
