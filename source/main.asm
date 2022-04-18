@@ -6,10 +6,10 @@
 ;                                                                                               ;
 ;                                                                                               ;
 ;-----------------------------------------------------------------------------------------------;
-                                                exitprocess     proto
-												getstdhandle	proto
-												writefile		proto
-												sleep			proto
+                                                ExitProcess     proto
+												GetStdHandle	proto
+												WriteFile		proto
+												Sleep			proto
 std_output_handle								equ				-11
 ;----------[const section]----------------------------------------------------------------------;
 .const
@@ -53,20 +53,20 @@ main                                            proc
                                                 ;-----------------------------------------------;
 												sub				rsp, 40							; writefile(5 parms) * 8 = 40 bytes
 												mov				rcx, std_output_handle
-												call			getstdhandle
+												call			GetStdHandle
 
 												mov				rcx, rax
 												lea				rdx, outputmessage
 												mov				r8, outputmessagelength
 												xor				r9, r9
 												mov				[rsp + 32], r9					; nth parm - 1 = (5 - 4) * 8 = 32 bytes
-												call			writefile
+												call			WriteFile
 
 												mov				rcx, 5000d
-												call			sleep
+												call			Sleep
                                                 
 												xor				rcx, rcx						; set termination code 0 for clean exit
-                                                call            exitprocess
+                                                call            ExitProcess
                                                 ret             0
 main                                            endp
 end
