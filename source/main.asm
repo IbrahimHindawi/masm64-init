@@ -1,19 +1,16 @@
 ;-----------------------------------------------------------------------------------------------;
 ;                                                                                               ;
-;           start project                                                                       ;
+;           MASM64 Starter Project.                                                             ;
 ;-----------------------------------------------------------------------------------------------;
 ;                                                                                               ;
-;                                                                                               ;
-;                                                                                               ;
+;           Writes to the StdOut, then exits safely.                                            ;
 ;-----------------------------------------------------------------------------------------------;
-                                                ExitProcess     proto
                                                 GetStdHandle    proto
                                                 WriteFile       proto
-                                                Sleep           proto
+                                                ExitProcess     proto
 std_output_handle                               equ             -11
 ;----------[const section]----------------------------------------------------------------------;
 .const
-;outputmessagelength                            qword           sizeof outputmessage
 outputmessage                                   byte            'hello, world!'
                                                 byte            0ah, 0dh
                                                 byte            'from masm64!'
@@ -26,27 +23,6 @@ var                                             qword           0ffffh
 ;----------[code section]-----------------------------------------------------------------------;
 .code
 main                                            proc
-                                                ;-----[multiplication]--------------------------;
-                                                ; 64-bit multiplication results in 128-bit resul;
-                                                ; therefore rax and rdx are used
-                                                ;-----------------------------------------------;
-                                                xor             rax, rax                        ; clear rax
-                                                xor             rcx, rcx                        ; clear rcx
-                                                
-                                                mov             rax, 3
-                                                mov             rcx, var
-                                                
-                                                mul             rcx
-                                                mov             var, rax
-
-                                                xor             rax, rax
-                                                xor             rcx, rcx
-
-                                                mov             rax, 1911
-                                                mov             rcx, var
-
-                                                mul             rcx 
-                                                mov             var, rax
                                                 ;-----[data output]-----------------------------;
                                                 ; print something to the console using writefile
                                                 ; write to std out
@@ -62,9 +38,6 @@ main                                            proc
                                                 mov             [rsp + 32], r9                  ; nth parm - 1 = (5 - 4) * 8 = 32 bytes
                                                 call            WriteFile
 
-                                                mov             rcx, 5000d
-                                                call            Sleep
-                                                
                                                 xor             rcx, rcx                        ; set termination code 0 for clean exit
                                                 call            ExitProcess
                                                 ret             0
