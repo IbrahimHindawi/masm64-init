@@ -179,6 +179,11 @@ main                                            proc
                                                 ; jae jnb
                                                 ; jb jnae
                                                 ; jbe jna
+                                                ;
+                                                ; jg jnle
+                                                ; jge jnl
+                                                ; jl jnge
+                                                ; jle jng
                                                 xor             rdx, rdx
                                                 mov             rbx, 100
                                                 mov             rcx, 200
@@ -196,11 +201,17 @@ main                                            proc
                                                 jbe             equal                           ; jump if lop below or equal rop
                                                 mov             rdx, 3
                                                 equal:
-                                                ; compare
-                                                ; jg jnle
-                                                ; jge jnl
-                                                ; jl jnge
-                                                ; jle jng
+                                                ; loop
+                                                xor             rcx, rcx
+                                                xor             rax, rax
+                                                inc             rax
+                                                acc_entry:
+                                                add             rax, rax
+                                                inc             rcx
+                                                cmp             rcx, 10
+                                                je              acc_end
+                                                jmp             acc_entry
+                                                acc_end:
 
 
                                                 xor             rcx, rcx                        ; set termination code 0 for clean exit
