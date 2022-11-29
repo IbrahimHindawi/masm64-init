@@ -19,9 +19,16 @@ outputmessagelength                             equ             $ - outputmessag
 constval                                        equ             12
 ;----------[data section]-----------------------------------------------------------------------;
 .data
-                                                ; create a 64-bit variable
 var                                             qword           0ffffh
 x                                               real4           3.15
+a                                               byte            10
+b                                               byte            20
+c                                               byte            30
+d                                               byte            40
+seqa                                            byte            1, 2, 3
+seqb                                            word            10, 20, 30
+seqc                                            dword           100, 200, 300
+seqd                                            qword           1000, 2000, 3000
 
 ;----------[code section]-----------------------------------------------------------------------;
 .code
@@ -45,6 +52,23 @@ main                                            proc
                                                 ;----[chapter 01]-------------------------------;
                                                 ; moving variables around
                                                 ;-----------------------------------------------;
+                                                ; 64  | 32   | 16    | 8      |
+                                                ; rax | eax  | ax    | ah/al  | accumulator     |
+                                                ; rbx | ebx  | bx    | bh/bl  | base            |
+                                                ; rcx | ecx  | cx    | ch/cl  | counter         |
+                                                ; rdx | edx  | dx    | dh/dl  | data            |
+                                                ; rsi | esi  | si    | sil    | source_idx      |
+                                                ; rdi | edi  | di    | dil    | destination_idx |
+                                                ; rbp | ebp  | bp    | bpl    | base_pointer    |
+                                                ; rsp | esp  | sp    | spl    | stack_pointer   |
+                                                ; r8  | r8d  | r8w   | r8b    | general_purpose |
+                                                ; r9  | r9d  | r9w   | r9b    | general_purpose |
+                                                ; r10 | r10d | r10w  | r10b   | general_purpose |
+                                                ; r11 | r11d | r11w  | r11b   | general_purpose |
+                                                ; r12 | r12d | r12w  | r12b   | general_purpose |
+                                                ; r13 | r13d | r13w  | r13b   | general_purpose |
+                                                ; r14 | r14d | r14w  | r14b   | general_purpose |
+                                                ; r15 | r15d | r15w  | r15b   | general_purpose |
                                                 ; move
                                                 xor             rcx, rcx
                                                 xor             rdx, rdx
@@ -53,9 +77,11 @@ main                                            proc
                                                 mov             rcx, var
                                                 mov             var, rdx
                                                 ; constants
+                                                ;-----------------------------------------------;
                                                 mov             rcx, constval
                                                 mov             rdx, constval + 8
                                                 ; exchange data
+                                                ;-----------------------------------------------;
                                                 xchg            rcx, rdx
                                                 xchg            rcx, var
 
@@ -65,15 +91,18 @@ main                                            proc
                                                 add             rcx, rdx
                                                 sub             rdx, rcx
                                                 ; inc dec neg
+                                                ;-----------------------------------------------;
                                                 inc             rcx
                                                 dec             rdx
                                                 neg             rcx
                                                 ; unsigned mul div
+                                                ;-----------------------------------------------;
                                                 mov             rax, 8                          ; multiplicand is rax
                                                 mul             rcx                             ; multiplier can be any reg, result [rdx, rax] [upper, lower]
                                                 mov             rax, 8                          ; dividend is rax
                                                 div             rcx                             ; divisor can be any reg, result [rdx, rax] [remainder, quotient]
                                                 ; signed mul
+                                                ;-----------------------------------------------;
                                                 xor             rax, rax
                                                 xor             rcx, rcx
                                                 xor             rdx, rdx
@@ -88,6 +117,7 @@ main                                            proc
                                                 imul            rcx, rdx                        ; multiplicand, multiplier
                                                 imul            r8, rcx, 16                     ; destination, multiplicand, multiplier
                                                 ; signed div
+                                                ;-----------------------------------------------;
                                                 xor             rax, rax
                                                 xor             rbx, rbx
                                                 xor             rdx, rdx
@@ -98,6 +128,7 @@ main                                            proc
                                                 cqo                                             ; sign extension must be used with negative numbers
                                                 idiv            rbx
                                                 ; bit manipulation
+                                                ;-----------------------------------------------;
                                                 xor             rcx, rcx
                                                 xor             rdx, rdx
                                                 mov             rcx, 00F0Fh
@@ -119,6 +150,7 @@ main                                            proc
                                                 mov             rdx, 0F0F0h
                                                 not             rcx
                                                 ; shifting bits
+                                                ;-----------------------------------------------;
                                                 xor             rcx, rcx
                                                 mov             rcx, 00F0Fh
                                                 shl             rcx, 2                          ; shift n bits to the left
@@ -126,6 +158,7 @@ main                                            proc
                                                 sal             rcx, 2                          ; shift n bits to the left while adding 1s to the right
                                                 sar             rcx, 2                          ; shift n bits to the right while adding 1s to the left
                                                 ; rotating bits
+                                                ;-----------------------------------------------;
                                                 xor             rcx, rcx
                                                 mov             rcx, 00F0Fh
                                                 rol             rcx, 2                          ; rotate n bits to the left
@@ -134,6 +167,7 @@ main                                            proc
                                                 rcr             rcx, 2                          ; rotate n bits to the right while adding 1s to the right
                                                 ;----[chapter 03]-------------------------------;
                                                 ; directing flow
+                                                ;-----------------------------------------------;
                                                 ; AC auxiliary carry
                                                 ; CY carry
                                                 ; EI enable interrupt
@@ -144,15 +178,18 @@ main                                            proc
                                                 ; ZR Zero
                                                 ;-----------------------------------------------;
                                                 ; jump
+                                                ;-----------------------------------------------;
                                                 xor             rax, rax
                                                 jmp             next
                                                 mov             rax, 2
                                                 next:
                                                 mov             rax, 8
                                                 ; test
+                                                ;-----------------------------------------------;
                                                 mov             rcx, 0FFFFh
                                                 test            rcx, 00001h                     ; jump if odd
                                                 ; flag based jumps
+                                                ;-----------------------------------------------;
                                                 xor             rdx, rdx
                                                 mov             cl, 255
                                                 add             cl, 1
@@ -173,6 +210,7 @@ main                                            proc
                                                 mov             rdx, 4
                                                 notZero:
                                                 ; compare
+                                                ;-----------------------------------------------;
                                                 ; comparing left op to right op
                                                 ; je jne
                                                 ; ja jnbe
@@ -202,6 +240,7 @@ main                                            proc
                                                 mov             rdx, 3
                                                 equal:
                                                 ; loop
+                                                ;-----------------------------------------------;
                                                 xor             rcx, rcx
                                                 xor             rax, rax
                                                 inc             rax
@@ -212,6 +251,30 @@ main                                            proc
                                                 je              acc_end
                                                 jmp             acc_entry
                                                 acc_end:
+                                                ; addressing
+                                                ;-----------------------------------------------;
+                                                xor             rdx, rdx
+                                                mov             al, a
+                                                mov             ah, a + 3
+
+                                                lea             rcx, b
+                                                mov             dl, [rcx]
+                                                mov             dh, [rcx + 1]
+
+                                                mov             cl, seqa
+                                                mov             dx, seqb
+                                                mov             r8d, seqc
+                                                mov             r9, seqd
+
+                                                mov             cl, seqa + 1
+                                                mov             dx, seqb + 2
+                                                mov             r8d, seqc + 4
+                                                mov             r9, seqd + 8
+
+                                                mov             cl, seqa + (2 * 1)
+                                                mov             dx, seqb + (2 * 2)
+                                                mov             r8d, seqc + (2 * 4)
+                                                mov             r9, seqd + (2 * 8)
 
 
                                                 xor             rcx, rcx                        ; set termination code 0 for clean exit
