@@ -25,10 +25,19 @@ a                                               byte            10
 b                                               byte            20
 c                                               byte            30
 d                                               byte            40
+
 seqa                                            byte            1, 2, 3
 seqb                                            word            10, 20, 30
 seqc                                            dword           100, 200, 300
 seqd                                            qword           1000, 2000, 3000
+
+seqe                                            byte            1, 2, 3, 4
+                                                byte            4, 5, 6, 7
+                                                byte            3, 1, 8, 9
+
+seqf                                            qword           176, 269, 368, 476
+                                                qword           437, 593, 672, 722
+                                                qword           334, 122, 387, 872
 
 ;----------[code section]-----------------------------------------------------------------------;
 .code
@@ -253,6 +262,7 @@ main                                            proc
                                                 acc_end:
                                                 ; addressing
                                                 ;-----------------------------------------------;
+                                                ; 1d array:     addr + ( index * sizeof( element ))
                                                 xor             rdx, rdx
                                                 mov             al, a
                                                 mov             ah, a + 3
@@ -275,6 +285,30 @@ main                                            proc
                                                 mov             dx, seqb + (2 * 2)
                                                 mov             r8d, seqc + (2 * 4)
                                                 mov             r9, seqd + (2 * 8)
+
+                                                ; 2d array:     addr + ( x + y * width ) * sizeof( element )
+                                                xor             r9, r9
+                                                mov             r9b, seqe + (1 + 2 * 4) * 1
+                                                mov             r9, seqf + (1 + 2 * 4) * 8
+
+                                                ; addressing source index (RSI):     
+                                                ;-----------------------------------------------;
+                                                ; traversal:    base + index * scale + displacement
+                                                ; base:         reg with memory addr of array
+                                                ; index:        reg or immediate value
+                                                ; scale:        size of element (byte word dword qword)
+                                                ; displacement: immediate value to denote row or col 
+                                                ;               offsets in 2d arrays
+                                                lea             rsi, seqd
+                                                xor             rcx, rcx
+                                                start:
+                                                mov             rdx, [rsi + rcx * 8]
+                                                inc             rcx
+                                                cmp             rcx, lengthof seqd
+                                                jne             start
+
+                                                ; addressing destination index (RDI):     
+                                                ;-----------------------------------------------;
 
 
                                                 xor             rcx, rcx                        ; set termination code 0 for clean exit
