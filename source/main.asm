@@ -9,7 +9,8 @@
                                                 include                                         chapters/flow.asm
                                                 include                                         chapters/addr.asm
                                                 include                                         chapters/strings.asm
-                                                include                                         chapters/procs.asm
+                                                include                                         chapters/procs.asm                  
+                                                include                                         chapters/math.asm                  
 
                                                 GetStdHandle                                    proto
                                                 WriteFile                                       proto
@@ -49,6 +50,7 @@ main                                            proc
                                                 call                                            addressing
                                                 call                                            strings
                                                 call                                            procks
+                                                call                                            math
 
 
                                                 xor                                             rcx, rcx                        ; set termination code 0 for clean exit

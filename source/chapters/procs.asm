@@ -18,9 +18,8 @@ func_var                                        qword                           
 .code
 
 procks                                          proc
-                                                ;-----[data output]-----------------------------------------------------------------;
-                                                ; print something to the console using writefile                                    ;
-                                                ; write to std out                                                                  ;
+                                                ;-------[procedure]-----------------------------------------------------------------;
+                                                ;       procedure example in assemnly                                               ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 xor                                             rax, rax                            ; return zero
                                                 ret                                                                                 ; return
