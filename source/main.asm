@@ -5,11 +5,11 @@
 ;                                                                                                                                   ;
 ;           Writes to the StdOut, then exits safely.                                                                                ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
-                                                include                                         move.asm
-                                                include                                         flow.asm
-                                                include                                         addr.asm
-                                                include                                         str.asm
-                                                include                                         procs.asm
+                                                include                                         chapters/move.asm
+                                                include                                         chapters/flow.asm
+                                                include                                         chapters/addr.asm
+                                                include                                         chapters/strings.asm
+                                                include                                         chapters/procs.asm
 
                                                 GetStdHandle                                    proto
                                                 WriteFile                                       proto
