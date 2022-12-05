@@ -17,13 +17,13 @@ func_var                                        qword                           
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
 .code
 
-procks                                          proc
+procs                                           proc
                                                 ;-------[procedure]-----------------------------------------------------------------;
-                                                ;       procedure example in assemnly                                               ;
+                                                ;       procedure example                                                           ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 xor                                             rax, rax                            ; return zero
                                                 ret                                                                                 ; return
-procks                                          endp                                                                                ; end proc
+procs                                           endp                                                                                ; end proc
 
                                                 endif                                                                               ; header guard end
 

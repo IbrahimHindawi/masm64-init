@@ -21,7 +21,6 @@ dnum0                                           real8                           
 dnum1                                           real8                                           1.5, 3.1415926535897932             ; 128 bit aligned 2 x f64 vector
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
 .code
-
 math                                            proc
                                                 ;-----------------------------------------------------------------------------------;
                                                 ;   Streaming Extensions: SSE AVX AVX-512                                           ;
@@ -39,7 +38,7 @@ math                                            proc
                                                 ;   YMM    32 byte - 16 word - 8  dword - 4 qword                                   ;
                                                 ;   ZMM    64 byte - 32 word - 16 dword - 8 qword                                   ;
                                                 ;                                                                                   ;
-                                                ;-----------------------------------------------------------------------------------;
+                                                ;---[vector mov]--------------------------------------------------------------------;
                                                 movdqa                                          xmm0, xmmword ptr [nums0]           ; type coalescing data into xmm reg
                                                 paddd                                           xmm0, xmmword ptr [nums1]           ; packed integer add dword
                                                 movdqa                                          xmm1, xmmword ptr [nums1]           ; move double quadword aligned
@@ -47,8 +46,12 @@ math                                            proc
 
                                                 movaps                                          xmm0, xmmword ptr [fnum0]           ; move, aligned, packed, single
                                                 movapd                                          xmm1, xmmword ptr [dnum0]           ; move, aligned, packed, double
-
                                                 ;---[scalar ops]--------------------------------------------------------------------;
+                                                ;   addss addpd                                                                     ;
+                                                ;   subss subpd                                                                     ;
+                                                ;   mulss mulpd                                                                     ;
+                                                ;   divss divpd                                                                     ;
+                                                ;-----------------------------------------------------------------------------------;
                                                 movss                                           xmm0, fnum0
                                                 movss                                           xmm1, fnum1
 
@@ -57,10 +60,10 @@ math                                            proc
                                                 subss                                           xmm0, xmm1
                                                 divss                                           xmm0, xmm1
                                                 ;---[vector ops]--------------------------------------------------------------------;
-                                                ;   addps addpd
-                                                ;   subps subpd
-                                                ;   mulps mulpd
-                                                ;   divps divpd
+                                                ;   addps addpd                                                                     ;
+                                                ;   subps subpd                                                                     ;
+                                                ;   mulps mulpd                                                                     ;
+                                                ;   divps divpd                                                                     ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 movaps                                          xmm0, xmmword ptr [fnum0]
                                                 movaps                                          xmm1, xmmword ptr [fnum1]

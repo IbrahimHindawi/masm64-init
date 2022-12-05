@@ -3,7 +3,11 @@
 ;           MASM64 Starter Project.                                                                                                 ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
 ;                                                                                                                                   ;
-;           Writes to the StdOut, then exits safely.                                                                                ;
+;           This project teaches how to use Microsoft Macro Assembler 64-bit                                                        ;
+;           First it prints hello world and then calls different procedures                                                         ;
+;           that explain different aspects of assembley programming.                                                                ;
+;           Each chapter is a different module included into this file.                                                             ;
+;                                                                                                                                   ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
                                                 include                                         chapters/move.asm
                                                 include                                         chapters/flow.asm
@@ -30,31 +34,31 @@ x                                               real4                           
 .code
 main                                            proc
                                                 ;-----[data output]-----------------------------------------------------------------;
-                                                ; print something to the console using writefile
-                                                ; write to std out
+                                                ; print something to the console using writefile                                    ;
+                                                ; write to std out                                                                  ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 sub                                             rsp, 40                             ; writefile(5 parms) * 8 = 40 bytes
-                                                mov                                             rcx, std_output_handle
-                                                call                                            GetStdHandle
+                                                mov                                             rcx, std_output_handle              ; output handle arg
+                                                call                                            GetStdHandle                        ; get handle from os
 
-                                                mov                                             rcx, rax
-                                                lea                                             rdx, outputmessage
-                                                mov                                             r8, outputmessagelength
-                                                xor                                             r9, r9
+                                                mov                                             rcx, rax                            ; pass result into rcx
+                                                lea                                             rdx, outputmessage                  ; address of string
+                                                mov                                             r8, outputmessagelength             ; len of string
+                                                xor                                             r9, r9                              ; zero
                                                 mov                                             [rsp + 32], r9                      ; nth parm - 1 = (5 - 4) * 8 = 32 bytes
-                                                call                                            WriteFile
-                                                add                                             rsp, 40
+                                                call                                            WriteFile                           ; print
+                                                add                                             rsp, 40                             ; balance the stack
 
                                                 call                                            move
                                                 call                                            flow
                                                 call                                            addressing
                                                 call                                            strings
-                                                call                                            procks
+                                                call                                            procs
                                                 call                                            math
 
 
-                                                xor                                             rcx, rcx                        ; set termination code 0 for clean exit
-                                                call                                            ExitProcess                     ; terminate process
-                                                ret                                             0                               ; return code
-main                                            endp                                                                            ; end proc
-                                                end                                                                             ; end module
+                                                xor                                             rcx, rcx                            ; set termination code 0 for clean exit
+                                                call                                            ExitProcess                         ; terminate process
+                                                ret                                             0                                   ; return code
+main                                            endp                                                                                ; end proc
+                                                end                                                                                 ; end module
