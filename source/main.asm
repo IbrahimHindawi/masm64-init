@@ -20,6 +20,13 @@
                                                 WriteFile                                       proto
                                                 ExitProcess                                     proto
 std_output_handle                               equ                                             -11
+
+vector                                          struct
+x                                               real4                                           ?
+y                                               real4                                           ?
+z                                               real4                                           ?
+vector                                          ends
+
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
 .const
 outputmessage                                   byte                                            'hello, world!'
@@ -29,7 +36,9 @@ outputmessage                                   byte                            
 outputmessagelength                             equ                                             $ - outputmessage
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
 .data
-x                                               real4                                           3.15
+tensor_cube                                     vector                                          3 * 3 dup(<>)
+tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
+number                                          dword                                           040400000r
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
 .code
 main                                            proc
@@ -55,6 +64,23 @@ main                                            proc
                                                 call                                            strings
                                                 call                                            procs
                                                 call                                            math
+
+                                                mov                                             ecx, number
+                                                add                                             ecx, ecx
+                                                movss                                           xmm0, number
+
+                                                ; x * n^0 + y * n^1 + z * n^2
+                                                xor                                             rax, rax
+                                                xor                                             rcx, rcx
+                                                lea                                             rdx, tensor_cube
+                                                tensor_cube_fill:
+                                                mov                                             real4 ptr [tensor_cube + rcx].vector.x, 03f800000h
+                                                mov                                             real4 ptr [tensor_cube + rcx].vector.y, 0
+                                                mov                                             real4 ptr [tensor_cube + rcx].vector.z, 0bF800000h
+                                                add                                             rcx, sizeof vector
+                                                cmp                                             rcx, tensor_cube_len * sizeof vector
+                                                jl                                              tensor_cube_fill
+
 
 
                                                 xor                                             rcx, rcx                            ; set termination code 0 for clean exit
