@@ -31,6 +31,9 @@ vector                                          ends
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
 .const
 N                                               equ                                             256
+
+tensorN                                         equ                                             3 * 3
+
 outputmessage                                   byte                                            'hello, world!'
                                                 byte                                            0ah, 0dh
                                                 byte                                            'from masm64!'
@@ -38,10 +41,10 @@ outputmessage                                   byte                            
 outputmessagelength                             equ                                             $ - outputmessage
 ;----------[data section]-----------------------------------------------------------------------------------------------------------;
 .data
-tensor_cube                                     vector                                          3 * 3 dup(<>)
-tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
-number                                          dword                                           040400000r
 arr                                             dword                                           N dup(?)
+
+tensor_cube                                     vector                                          tensorN dup(<>)
+tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
 .code
 main                                            proc
@@ -104,7 +107,7 @@ main                                            proc
                                                 jl                                              tensor_cube_fill
 
 
-                                                ;-----[terminator program]----------------------------------------------------------;
+                                                ;-----[terminate program]-----------------------------------------------------------;
                                                 ; these instructions show how to cleanly exit the program.                          ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 xor                                             rcx, rcx                            ; set termination code 0 for clean exit
