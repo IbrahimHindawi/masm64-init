@@ -9,6 +9,7 @@
 ;           Each chapter is a different module included into this file.                                                             ;
 ;                                                                                                                                   ;
 ;-----------------------------------------------------------------------------------------------------------------------------------;
+;----------[types modules constants procedure prototypes]---------------------------------------------------------------------------;
                                                 include                                         chapters/move.asm
                                                 include                                         chapters/flow.asm
                                                 include                                         chapters/addr.asm
@@ -29,6 +30,7 @@ vector                                          ends
 
 ;----------[const section]----------------------------------------------------------------------------------------------------------;
 .const
+N                                               equ                                             256
 outputmessage                                   byte                                            'hello, world!'
                                                 byte                                            0ah, 0dh
                                                 byte                                            'from masm64!'
@@ -39,12 +41,13 @@ outputmessagelength                             equ                             
 tensor_cube                                     vector                                          3 * 3 dup(<>)
 tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
 number                                          dword                                           040400000r
+arr                                             dword                                           N dup(?)
 ;----------[code section]-----------------------------------------------------------------------------------------------------------;
 .code
 main                                            proc
-                                                ;-----[data output]-----------------------------------------------------------------;
-                                                ; print something to the console using writefile                                    ;
-                                                ; write to std out                                                                  ;
+                                                ;-----[print hello]-----------------------------------------------------------------;
+                                                ; print something to the console using writefile then write to std out.             ;
+                                                ; this procedure also shows the win64 calling convention.                           ;
                                                 ;-----------------------------------------------------------------------------------;
                                                 sub                                             rsp, 40                             ; writefile(5 parms) * 8 = 40 bytes
                                                 mov                                             rcx, std_output_handle              ; output handle arg
@@ -58,31 +61,52 @@ main                                            proc
                                                 call                                            WriteFile                           ; print
                                                 add                                             rsp, 40                             ; balance the stack
 
+                                                ;-----[call procs]------------------------------------------------------------------;
+                                                ; these are the procedures that represent the various chapters that explain x64     ;
+                                                ; assembly programming. Read each chapter in order.                                 ;
+                                                ;-----------------------------------------------------------------------------------;
                                                 call                                            move
                                                 call                                            flow
                                                 call                                            addressing
                                                 call                                            strings
                                                 call                                            procs
                                                 call                                            math
+                                                
+                                                ;-----[array init]------------------------------------------------------------------;
+                                                ; these instructions show how to manipulate data in an array using looping          ;
+                                                ;-----------------------------------------------------------------------------------;
+                                                xor                                             rcx, rcx
+                                                lea                                             rdx, arr
 
-                                                mov                                             ecx, number
-                                                add                                             ecx, ecx
-                                                movss                                           xmm0, number
+                                                arr_loop:
+                                                mov                                             dword ptr [rdx], ecx
 
-                                                ; x * n^0 + y * n^1 + z * n^2
+                                                inc                                             ecx
+                                                add                                             rdx, sizeof dword
+                                                cmp                                             ecx, N
+                                                jl                                              arr_loop
+
+                                                ;-----[tensor math]-----------------------------------------------------------------;
+                                                ; these instructions show how to manipulate data in a tensor pre allocated in memory;
+                                                ; using this formula x * n^0 + y * n^1 + z * n^2                                    ;
+                                                ;-----------------------------------------------------------------------------------;
                                                 xor                                             rax, rax
                                                 xor                                             rcx, rcx
                                                 lea                                             rdx, tensor_cube
+
                                                 tensor_cube_fill:
                                                 mov                                             real4 ptr [tensor_cube + rcx].vector.x, 03f800000h
                                                 mov                                             real4 ptr [tensor_cube + rcx].vector.y, 0
                                                 mov                                             real4 ptr [tensor_cube + rcx].vector.z, 0bF800000h
+
                                                 add                                             rcx, sizeof vector
                                                 cmp                                             rcx, tensor_cube_len * sizeof vector
                                                 jl                                              tensor_cube_fill
 
 
-
+                                                ;-----[terminator program]----------------------------------------------------------;
+                                                ; these instructions show how to cleanly exit the program.                          ;
+                                                ;-----------------------------------------------------------------------------------;
                                                 xor                                             rcx, rcx                            ; set termination code 0 for clean exit
                                                 call                                            ExitProcess                         ; terminate process
                                                 ret                                             0                                   ; return code
