@@ -22,6 +22,7 @@
                                                 include                                         chapters/addr.asm
                                                 include                                         chapters/strings.asm
                                                 include                                         chapters/procs.asm                  
+                                                include                                         chapters/macros.asm                  
                                                 include                                         chapters/math.asm                  
 
                                                 GetStdHandle                                    proto
@@ -91,6 +92,7 @@ main                                            proc
                                                 call                                            addressing
                                                 call                                            strings
                                                 call                                            procs
+                                                call                                            macros
                                                 call                                            math
                                                 
                                                 ;-----[array init]--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
