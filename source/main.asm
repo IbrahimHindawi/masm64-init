@@ -24,6 +24,7 @@
                                                 include                                         chapters/procs.asm                  
                                                 include                                         chapters/macros.asm                  
                                                 include                                         chapters/math.asm                  
+                                                option                                          casemap:none
 
                                                 GetStdHandle                                    proto
                                                 WriteFile                                       proto
@@ -46,6 +47,31 @@ base                                            pointer                         
 cursor                                          pointer                                         ?
 Arena                                           ends
 
+
+Vector                                          struct
+_name                                           pointer     ?
+id                                              byte        ?
+Vector                                          ends
+
+forloop                                         macro                                           type_:req
+;                                               local                                           loopstart
+;                                               lea                                             reg, vectorarray
+;                                               lea                                             r8, phrase
+;                                               xor                                             rcx, rcx
+;                                               loopstart:
+                                                mov                                             r9, sizeof(type_)
+                                                imul                                            r9, rcx
+;                                               exitm                                           <loopstart>
+endm
+forloopend                                      macro                                           len:req
+;                                               local                                           loop01
+;                                               mov                                             [reg + r9].type_._name, r8
+;                                               mov                                             [reg + r9].type_.id, cl
+                                                inc                                             rcx
+                                                cmp                                             rcx, len
+;                                               jl                                              loopname
+endm
+
 ;----------[const section]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 .const
 N                                               equ                                             256
@@ -63,6 +89,9 @@ arr                                             dword                           
 
 tensor_cube                                     vector                                          tensorN dup(<>)
 tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
+
+phrase                                          byte        "This is a phrase", 0Ah, 0h
+vectorarray                                     Vector      N dup({})
 ;----------[code section]--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 .code
 main                                            proc
@@ -125,6 +154,16 @@ main                                            proc
                                                 add                                             rcx, sizeof vector
                                                 cmp                                             rcx, tensor_cube_len * sizeof vector
                                                 jl                                              tensor_cube_fill
+
+                                                lea                                             r8, phrase
+                                                lea                                             rdx, vectorarray
+                                                xor                                             rcx, rcx
+                                                @@:
+                                                forloop                                         Vector
+                                                mov                                             [rdx + r9].Vector._name, r8
+                                                mov                                             [rdx + r9].Vector.id, cl
+                                                forloopend                                      N
+                                                jl                                              @B 
 
 
                                                 ;-----[terminate program]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
