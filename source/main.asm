@@ -26,11 +26,13 @@
                                                 include                                         chapters/math.asm                  
                                                 option                                          casemap:none
 
+;----------[winapi]--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                                                 GetStdHandle                                    proto
                                                 WriteFile                                       proto
                                                 ExitProcess                                     proto
 std_output_handle                               equ                                             -11
 
+;----------[types]---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 pointer                                         typedef                                         qword
 
 vector                                          struct
@@ -53,6 +55,7 @@ _name                                           pointer     ?
 id                                              byte        ?
 Vector                                          ends
 
+;----------[macros]--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 forloop                                         macro                                           type_:req
 ;                                               local                                           loopstart
 ;                                               lea                                             reg, vectorarray
@@ -88,10 +91,11 @@ outputmessagelength                             equ                             
 arr                                             dword                                           N dup(?)
 
 tensor_cube                                     vector                                          tensorN dup(<>)
-tensor_cube_len                                 = ($ - tensor_cube) / sizeof vector
+tensor_cube_len                                 =                                               ($ - tensor_cube) / sizeof vector
 
-phrase                                          byte        "This is a phrase", 0Ah, 0h
-vectorarray                                     Vector      N dup({})
+phrase                                          byte                                            "This is a phrase", 0Ah, 0dh
+phraselength                                    equ                                             $ - phrase 
+vectorarray                                     Vector                                          N dup({})
 ;----------[code section]--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 .code
 main                                            proc
@@ -99,15 +103,19 @@ main                                            proc
                                                 ; print something to the console using writefile then write to std out.             
                                                 ; this procedure also shows the win64 calling convention.                           
                                                 ;-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                                                sub                                             rsp, 40                             ; writefile(5 parms) * 8 = 40 bytes
                                                 mov                                             rcx, std_output_handle              ; output handle arg
                                                 call                                            GetStdHandle                        ; get handle from os
 
-                                                mov                                             rcx, rax                            ; pass result into rcx
-                                                lea                                             rdx, outputmessage                  ; address of string
-                                                mov                                             r8, outputmessagelength             ; len of string
-                                                xor                                             r9, r9                              ; zero
-                                                mov                                             [rsp + 32], r9                      ; nth parm - 1 = (5 - 4) * 8 = 32 bytes
+                                                ;-----[print hello]-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                ; note: how to calculate param stack location:
+                                                ; nth parm - 1 = (5 - 1) * 8 = 32 bytes
+                                                ;-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                sub                                             rsp, 40                             ; WriteFile(5 parms) * 8 = 40 bytes
+                                                mov                                             rcx, rax                            ; [0] hFile
+                                                lea                                             rdx, outputmessage                  ; [1] lpBuffer
+                                                mov                                             r8, outputmessagelength             ; [2] nNumberOfBytesToWrite
+                                                xor                                             r9, r9                              ; [3] lpNumberOfBytesWritten
+                                                mov                                             [rsp + 32], r9                      ; [4] lpOverlapped
                                                 call                                            WriteFile                           ; print
                                                 add                                             rsp, 40                             ; balance the stack
 
