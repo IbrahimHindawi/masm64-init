@@ -249,6 +249,30 @@ pre .l { color: var(--c-l); font-weight: 600; }
 .chapter-card:hover { border-color: var(--accent); color: var(--accent); }
 .chapter-card span { color: var(--muted); font-size: .9rem; }
 
+.concept-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px; margin: 24px 0 34px; }
+.concept { display: grid; gap: 5px; padding: 14px 16px; border: 1px solid var(--rule);
+           border-radius: 6px; background: var(--surface); }
+.concept strong { color: var(--heading); }
+.concept span { color: var(--muted); font-size: .92rem; }
+
+.lesson-intro { margin: 0 0 2rem; font-size: 1.03rem; }
+.lesson-section { margin: 0 0 2.8rem; }
+.lesson-section > h2 { margin-top: 0; }
+.code-sample { margin: 18px 0 12px; }
+.code-sample figcaption { margin: 0 0 7px; text-align: left; color: var(--muted);
+                          font-family: var(--mono); font-size: .78rem; }
+.code-sample pre { margin-bottom: 0; }
+.code-note { margin: 0; padding: 9px 12px; color: var(--muted); font-size: .92rem;
+             border-left: 2px solid var(--rule); }
+.code-note strong { color: var(--ink); }
+.takeaways { margin: 8px 0 26px; padding: 16px 20px 18px; border: 1px solid var(--rule);
+             border-radius: 6px; background: var(--surface); }
+.takeaways h2 { margin-top: 0; }
+.takeaways ul { margin-bottom: 0; }
+.source-footer { padding-top: 16px; border-top: 1px solid var(--rule); color: var(--muted); }
+
 @media (max-width: 620px) {
-  .chapter-grid { grid-template-columns: 1fr; }
+  .chapter-grid, .concept-grid { grid-template-columns: 1fr; }
+  .lesson-section { margin-bottom: 2.2rem; }
 }

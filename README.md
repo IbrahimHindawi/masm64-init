@@ -14,6 +14,15 @@ The site is generated from the assembly files in this repository. To rebuild it 
 python website/build.py C:\devel\psite\site-static\masm64-init
 ```
 
+## Source formatting
+
+The examples use the same compact four-space style as Vulkasm. Reformat every assembly module, or check formatting without changing files:
+
+```powershell
+scripts\format-asm.ps1
+scripts\format-asm.ps1 -Check
+```
+
 ## Learning Resources:
 If you are new to x86-64 Assembly I suggest:
 - [The Art of 64-Bit Assembly, Volume 1: x86-64 Machine Organization and Programming](https://nostarch.com/art-64-bit-assembly-volume-1)
