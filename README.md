@@ -3,6 +3,17 @@ Starter project for MASM64:
 - Launch `x64 Native Tools Command Prompt for VS 2022`.  
 - Run `scripts\build.bat`
 - Run with `build\main.exe` or `devenv build\main.exe`
+
+## Web guide
+
+Read the annotated source online at [ibrahimhindawi.com/masm64-init](https://ibrahimhindawi.com/masm64-init/).
+
+The site is generated from the assembly files in this repository. To rebuild it into the website checkout:
+
+```powershell
+python website/build.py C:\devel\psite\site-static\masm64-init
+```
+
 ## Learning Resources:
 If you are new to x86-64 Assembly I suggest:
 - [The Art of 64-Bit Assembly, Volume 1: x86-64 Machine Organization and Programming](https://nostarch.com/art-64-bit-assembly-volume-1)
@@ -32,4 +43,3 @@ If you are new to x86-64 Assembly I suggest:
 | ------------ | ---------------------------------------------------| ---------------------------- |
 | Volatile     | rax, rcx, rdx, r8,  r9,  r10, r11, rsp, xmm0–xmm5  | **Caller** must save         |
 | Non-Volatile | rbx, rbp, rsi, rdi, r12, r13, r14, r15, xmm6–xmm15 | **Callee** must save/restore |
-
